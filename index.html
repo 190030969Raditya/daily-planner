@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Daily Planner</title>
+</head>
+<body>
+
+  <h1>Daily Planner</h1>
+
+  <input id="title" type="text" placeholder="Task title">
+
+  <select id="priority">
+    <option value="low">Low</option>
+    <option value="medium">Medium</option>
+    <option value="high">High</option>
+  </select>
+
+  <button onclick="addTask()">Add Task</button>
+
+  <h2>Tasks</h2>
+
+  <ul id="taskList"></ul>
+
+
+  <script>
+    const API_URL = "https://daily-planner-production-290d.up.railway.app";
+
+    async function loadTasks() {
+      const response = await fetch(`${API_URL}/tasks`);
+      const tasks = await response.json();
+
+      const taskList = document.getElementById("taskList");
+
+      taskList.innerHTML = "";
+
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+
+        li.innerText =
+          `${task.title} - ${task.priority} - ${task.completed}`;
+
+        taskList.appendChild(li);
+      });
+    }
+
+
+    async function addTask() {
+      const title = document.getElementById("title").value;
+
+      const priority =
+        document.getElementById("priority").value;
+
+      await fetch(`${API_URL}/tasks`, {
+        method: "POST",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+          title: title,
+          priority: priority
+        })
+      });
+
+      document.getElementById("title").value = "";
+
+      loadTasks();
+    }
+
+
+    loadTasks();
+  </script>
+
+</body>
