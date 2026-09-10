@@ -2,12 +2,15 @@ import os
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-
+from fastapi.responses import FileResponse
 from sqlalchemy import create_engine, Column, Integer, String, Boolean
 from sqlalchemy.orm import declarative_base, sessionmaker
 
 
 app = FastAPI()
+@app.get("/")
+def home():
+    return FileResponse("index.html")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
